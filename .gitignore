@@ -1,4 +1,4 @@
 ai-vs-human-generated-dataset*
-artifacts/
+artifacts/*.pt
 .ipynb_checkpoints
 .DS_store
