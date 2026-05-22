@@ -1,0 +1,9 @@
+{
+  "bucket": "mlops-models",
+  "object": "finetuned/resnet18_train2_best.pt",
+  "etag": "5850aeadd714aaa9a017c3b7df86e989-9",
+  "version_id": null,
+  "source_file": "artifacts/resnet18_train2_finetuned_best.pt",
+  "source_size_bytes": 44792395,
+  "console_url": "http://localhost:19001"
+}

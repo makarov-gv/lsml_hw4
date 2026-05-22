@@ -1,0 +1,18 @@
+{
+  "experiment_name": "baseline_train1",
+  "model_name": "resnet18",
+  "pretrained": true,
+  "num_classes": 2,
+  "train_csv": "ai-vs-human-generated-dataset-hw/Train_1/train.csv",
+  "train_root": "ai-vs-human-generated-dataset-hw/Train_1",
+  "test_csv": "ai-vs-human-generated-dataset-hw/Test_1/test.csv",
+  "test_root": "ai-vs-human-generated-dataset-hw/Test_1",
+  "image_size": 224,
+  "batch_size": 8,
+  "num_epochs": 10,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "scheduler": "StepLR",
+  "scheduler_step_size": 5,
+  "scheduler_gamma": 0.1
+}

@@ -1,0 +1,76 @@
+stages:
+  download_baseline_model:
+    cmd: >-
+      python scripts/download_model.py
+      --endpoint ${s3.endpoint}
+      --access-key ${s3.access_key}
+      --secret-key ${s3.secret_key}
+      --bucket ${s3.bucket}
+      --object-name ${s3.baseline_object}
+      --output-path ${finetune.base_model_path}
+    deps:
+      - scripts/download_model.py
+    params:
+      - s3
+      - finetune.base_model_path
+    outs:
+      - ${finetune.base_model_path}
+
+  finetune_train2:
+    cmd: python scripts/finetune_train2.py --params params.yaml
+    deps:
+      - scripts/finetune_train2.py
+      - scripts/ml_utils.py
+      - ${finetune.base_model_path}
+      - ${finetune.train_csv}
+      - ${finetune.train_root}
+    params:
+      - finetune
+    outs:
+      - ${finetune.best_model_path}
+      - ${finetune.last_model_path}
+      - ${finetune.tensorboard_dir}:
+          cache: false
+    metrics:
+      - ${finetune.train_metrics_path}:
+          cache: false
+
+  evaluate_train2:
+    cmd: python scripts/evaluate_train2.py --params params.yaml
+    deps:
+      - scripts/evaluate_train2.py
+      - scripts/ml_utils.py
+      - ${finetune.best_model_path}
+      - ${finetune.test_csv}
+      - ${finetune.test_root}
+      - ${finetune.train_metrics_path}
+    params:
+      - finetune
+    outs:
+      - ${finetune.metrics_plot_path}:
+          cache: false
+    metrics:
+      - ${finetune.test_metrics_path}:
+          cache: false
+
+  upload_finetuned_model:
+    cmd: >-
+      python scripts/upload_model.py
+      --endpoint ${s3.endpoint}
+      --access-key ${s3.access_key}
+      --secret-key ${s3.secret_key}
+      --bucket ${s3.bucket}
+      --object-name ${s3.finetuned_object}
+      --input-path ${finetune.best_model_path}
+      --upload-info-path ${s3.finetuned_upload_info_path}
+    deps:
+      - scripts/upload_model.py
+      - scripts/ml_utils.py
+      - ${finetune.best_model_path}
+      - ${finetune.test_metrics_path}
+    params:
+      - s3
+      - finetune.best_model_path
+    metrics:
+      - ${s3.finetuned_upload_info_path}:
+          cache: false

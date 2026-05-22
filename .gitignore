@@ -1,4 +1,5 @@
 ai-vs-human-generated-dataset*
 artifacts/*.pt
+__pycache__/
 .ipynb_checkpoints
 .DS_store

@@ -1,0 +1,21 @@
+{
+  "num_classes": 2,
+  "image_size": 224,
+  "batch_size": 8,
+  "num_workers": 4,
+  "num_epochs": 5,
+  "learning_rate": 0.0001,
+  "scheduler_step_size": 3,
+  "scheduler_gamma": 0.1,
+  "train_csv": "ai-vs-human-generated-dataset-hw/Train_2/train.csv",
+  "train_root": "ai-vs-human-generated-dataset-hw/Train_2",
+  "test_csv": "ai-vs-human-generated-dataset-hw/Test_2/test.csv",
+  "test_root": "ai-vs-human-generated-dataset-hw/Test_2",
+  "tensorboard_dir": "runs/finetune_train2",
+  "base_model_path": "artifacts/resnet18_train1_best_from_s3.pt",
+  "best_model_path": "artifacts/resnet18_train2_finetuned_best.pt",
+  "last_model_path": "artifacts/resnet18_train2_finetuned_last.pt",
+  "train_metrics_path": "artifacts/finetune_train2_train_metrics.csv",
+  "test_metrics_path": "artifacts/finetune_train2_test_metrics.json",
+  "metrics_plot_path": "artifacts/finetune_train2_metrics.png"
+}

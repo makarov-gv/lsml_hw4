@@ -1,0 +1,190 @@
+schema: '2.0'
+stages:
+  download_baseline_model:
+    cmd: python scripts/download_model.py --endpoint localhost:19000 
+      --access-key minioadmin --secret-key minioadmin --bucket mlops-models 
+      --object-name baseline/resnet18_train1_best.pt --output-path 
+      artifacts/resnet18_train1_best_from_s3.pt
+    deps:
+    - path: scripts/download_model.py
+      hash: md5
+      md5: dc53fe33742b20642d3142b5dbfec527
+      size: 955
+    params:
+      params.yaml:
+        finetune.base_model_path: artifacts/resnet18_train1_best_from_s3.pt
+        s3:
+          endpoint: localhost:19000
+          access_key: minioadmin
+          secret_key: minioadmin
+          bucket: mlops-models
+          baseline_object: baseline/resnet18_train1_best.pt
+          finetuned_object: finetuned/resnet18_train2_best.pt
+          finetuned_upload_info_path: artifacts/finetune_train2_s3_upload.json
+    outs:
+    - path: artifacts/resnet18_train1_best_from_s3.pt
+      hash: md5
+      md5: 021b4f50c0250d473bbd380a3acf3878
+      size: 44791051
+  finetune_train2:
+    cmd: python scripts/finetune_train2.py --params params.yaml
+    deps:
+    - path: ai-vs-human-generated-dataset-hw/Train_2
+      hash: md5
+      md5: cd8edb58d893e35241fdf8fbf6049229.dir
+      size: 229344118
+      nfiles: 3998
+    - path: ai-vs-human-generated-dataset-hw/Train_2/train.csv
+      hash: md5
+      md5: 0f7ec0c515fce25ac6149d3400150851
+      size: 264024
+    - path: artifacts/resnet18_train1_best_from_s3.pt
+      hash: md5
+      md5: 021b4f50c0250d473bbd380a3acf3878
+      size: 44791051
+    - path: scripts/finetune_train2.py
+      hash: md5
+      md5: 1a4dfe8e556ad6e1ddb1edec7c77e7ee
+      size: 3310
+    - path: scripts/ml_utils.py
+      hash: md5
+      md5: 3658a82131a1e2aa4116a43e6042b07c
+      size: 3711
+    params:
+      params.yaml:
+        finetune:
+          num_classes: 2
+          image_size: 224
+          batch_size: 8
+          num_workers: 4
+          num_epochs: 5
+          learning_rate: 0.0001
+          scheduler_step_size: 3
+          scheduler_gamma: 0.1
+          train_csv: ai-vs-human-generated-dataset-hw/Train_2/train.csv
+          train_root: ai-vs-human-generated-dataset-hw/Train_2
+          test_csv: ai-vs-human-generated-dataset-hw/Test_2/test.csv
+          test_root: ai-vs-human-generated-dataset-hw/Test_2
+          tensorboard_dir: runs/finetune_train2
+          base_model_path: artifacts/resnet18_train1_best_from_s3.pt
+          best_model_path: artifacts/resnet18_train2_finetuned_best.pt
+          last_model_path: artifacts/resnet18_train2_finetuned_last.pt
+          train_metrics_path: artifacts/finetune_train2_train_metrics.csv
+          test_metrics_path: artifacts/finetune_train2_test_metrics.json
+          metrics_plot_path: artifacts/finetune_train2_metrics.png
+    outs:
+    - path: artifacts/finetune_train2_train_metrics.csv
+      hash: md5
+      md5: 41cfd1783e5e38323604541a1be033ae
+      size: 355
+    - path: artifacts/resnet18_train2_finetuned_best.pt
+      hash: md5
+      md5: 4e45b2540e316fdc432003c499f6adeb
+      size: 44792395
+    - path: artifacts/resnet18_train2_finetuned_last.pt
+      hash: md5
+      md5: b3cedf35805ba829b2d8d8a990c6a47c
+      size: 44792395
+    - path: runs/finetune_train2
+      hash: md5
+      md5: 0495166afe4b4bb083a7424416008bd3.dir
+      size: 2547
+      nfiles: 3
+  evaluate_train2:
+    cmd: python scripts/evaluate_train2.py --params params.yaml
+    deps:
+    - path: ai-vs-human-generated-dataset-hw/Test_2
+      hash: md5
+      md5: 78c1cf796b1331dc3c334abbd3108e4b.dir
+      size: 114391042
+      nfiles: 2001
+    - path: ai-vs-human-generated-dataset-hw/Test_2/test.csv
+      hash: md5
+      md5: ec5a8a6020375f7f9b7b40fa925147e0
+      size: 131541
+    - path: artifacts/finetune_train2_train_metrics.csv
+      hash: md5
+      md5: 41cfd1783e5e38323604541a1be033ae
+      size: 355
+    - path: artifacts/resnet18_train2_finetuned_best.pt
+      hash: md5
+      md5: 4e45b2540e316fdc432003c499f6adeb
+      size: 44792395
+    - path: scripts/evaluate_train2.py
+      hash: md5
+      md5: 6951976a89ae2e8dde18982302226fe5
+      size: 3102
+    - path: scripts/ml_utils.py
+      hash: md5
+      md5: 3658a82131a1e2aa4116a43e6042b07c
+      size: 3711
+    params:
+      params.yaml:
+        finetune:
+          num_classes: 2
+          image_size: 224
+          batch_size: 8
+          num_workers: 4
+          num_epochs: 5
+          learning_rate: 0.0001
+          scheduler_step_size: 3
+          scheduler_gamma: 0.1
+          train_csv: ai-vs-human-generated-dataset-hw/Train_2/train.csv
+          train_root: ai-vs-human-generated-dataset-hw/Train_2
+          test_csv: ai-vs-human-generated-dataset-hw/Test_2/test.csv
+          test_root: ai-vs-human-generated-dataset-hw/Test_2
+          tensorboard_dir: runs/finetune_train2
+          base_model_path: artifacts/resnet18_train1_best_from_s3.pt
+          best_model_path: artifacts/resnet18_train2_finetuned_best.pt
+          last_model_path: artifacts/resnet18_train2_finetuned_last.pt
+          train_metrics_path: artifacts/finetune_train2_train_metrics.csv
+          test_metrics_path: artifacts/finetune_train2_test_metrics.json
+          metrics_plot_path: artifacts/finetune_train2_metrics.png
+    outs:
+    - path: artifacts/finetune_train2_metrics.png
+      hash: md5
+      md5: b71c9d4b197ecdfc9e865caf0329b0b9
+      size: 61200
+    - path: artifacts/finetune_train2_test_metrics.json
+      hash: md5
+      md5: d80f31e7a4396e364671d2748b137eeb
+      size: 150
+  upload_finetuned_model:
+    cmd: python scripts/upload_model.py --endpoint localhost:19000 --access-key 
+      minioadmin --secret-key minioadmin --bucket mlops-models --object-name 
+      finetuned/resnet18_train2_best.pt --input-path 
+      artifacts/resnet18_train2_finetuned_best.pt --upload-info-path 
+      artifacts/finetune_train2_s3_upload.json
+    deps:
+    - path: artifacts/finetune_train2_test_metrics.json
+      hash: md5
+      md5: d80f31e7a4396e364671d2748b137eeb
+      size: 150
+    - path: artifacts/resnet18_train2_finetuned_best.pt
+      hash: md5
+      md5: 4e45b2540e316fdc432003c499f6adeb
+      size: 44792395
+    - path: scripts/ml_utils.py
+      hash: md5
+      md5: 3658a82131a1e2aa4116a43e6042b07c
+      size: 3711
+    - path: scripts/upload_model.py
+      hash: md5
+      md5: fe7ed51bf919c37737023abe54087bde
+      size: 1624
+    params:
+      params.yaml:
+        finetune.best_model_path: artifacts/resnet18_train2_finetuned_best.pt
+        s3:
+          endpoint: localhost:19000
+          access_key: minioadmin
+          secret_key: minioadmin
+          bucket: mlops-models
+          baseline_object: baseline/resnet18_train1_best.pt
+          finetuned_object: finetuned/resnet18_train2_best.pt
+          finetuned_upload_info_path: artifacts/finetune_train2_s3_upload.json
+    outs:
+    - path: artifacts/finetune_train2_s3_upload.json
+      hash: md5
+      md5: 3caa17c16de7bfa4ff8c5a39974d1b4b
+      size: 289

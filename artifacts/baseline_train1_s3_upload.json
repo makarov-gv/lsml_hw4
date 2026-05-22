@@ -1,7 +1,7 @@
 {
   "bucket": "mlops-models",
   "object": "baseline/resnet18_train1_best.pt",
-  "etag": "e85ea85a7fe12c13d5852fc84d141c39-9",
+  "etag": "57ca5106e22acccf11d28d18060aa398-9",
   "version_id": null,
   "source_file": "artifacts/resnet18_train1_best.pt",
   "source_size_bytes": 44791051,
